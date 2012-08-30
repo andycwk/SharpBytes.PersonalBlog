@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBytes.PersonalBlog", "src\app\SharpBytes.PersonalBlog\SharpBytes.PersonalBlog.csproj", "{AA7C6044-47D1-42A4-9DA6-7138F12A5C7D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{81B0C500-6A56-4E5A-8227-63BCA5F1A2AC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{77C108F1-A797-4D7F-BA2B-EE581AB9F37B}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
