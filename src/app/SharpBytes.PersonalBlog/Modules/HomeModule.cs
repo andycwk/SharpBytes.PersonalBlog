@@ -6,7 +6,7 @@
     {
         public HomeModule()
         {
-            Get[ "/" ] = parameters => "Hello Nancy World";
+            Get[ "/" ] = parameters => "Hello Nancy World v2";
         }
     }
 }
