@@ -28,7 +28,11 @@ namespace SharpBytes.PersonalBlog.XmlRpc
         [XmlRpcMethod("metaWeblog.getCategories")]
         public CategoryInfo[] GetCategories(string blogid, string username, string password)
         {
-            throw new NotImplementedException();
+            return new CategoryInfo[]
+                       {
+                           new CategoryInfo {Description = "blobby descritpion", Title = "Blobby"},
+                           new CategoryInfo {Description = "bobby descritpion", Title = "Bobby"}
+                       };
         }
 
         [XmlRpcMethod("metaWeblog.getRecentPosts")]
