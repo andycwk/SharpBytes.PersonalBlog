@@ -56,9 +56,9 @@ namespace SharpBytes.PersonalBlog.XmlRpc
                        {
                            new BlogInfo()
                                {
-                                   Blogid = "1",
-                                   BlogName="Andrew Macdonald",
-                                   Url="http://sb-test01.azurewebsites.net/"
+                                   blogid = "1",
+                                   blogName="Andrew Macdonald",
+                                   url="http://sb-test01.azurewebsites.net/"
                                }
                        };
         }
