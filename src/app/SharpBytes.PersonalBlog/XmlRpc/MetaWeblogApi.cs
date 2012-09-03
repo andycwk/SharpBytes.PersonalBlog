@@ -58,7 +58,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
                                {
                                    Blogid = "1",
                                    BlogName="Andrew Macdonald",
-                                   Url="http://localhost:51313/"
+                                   Url="http://sb-test01.azurewebsites.net/"
                                }
                        };
         }
