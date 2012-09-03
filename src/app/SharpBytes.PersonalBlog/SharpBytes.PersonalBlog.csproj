@@ -40,6 +40,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CookComputing.XmlRpcServerV2">
+      <HintPath>..\..\..\packages\xmlrpcnet-server.3.0.0.266\lib\net20\CookComputing.XmlRpcServerV2.dll</HintPath>
+    </Reference>
+    <Reference Include="CookComputing.XmlRpcV2">
+      <HintPath>..\..\..\packages\xmlrpcnet.3.0.0.266\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy">
       <HintPath>..\..\..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
@@ -47,6 +53,13 @@
     <Reference Include="Nancy.Hosting.Aspnet">
       <HintPath>..\..\..\packages\Nancy.Hosting.Aspnet.0.11.0\lib\net40\Nancy.Hosting.Aspnet.dll</HintPath>
     </Reference>
+    <Reference Include="Nancy.ViewEngines.Spark">
+      <HintPath>..\..\..\packages\Nancy.Viewengines.Spark.0.11.0\lib\net40\Nancy.ViewEngines.Spark.dll</HintPath>
+    </Reference>
+    <Reference Include="Spark">
+      <HintPath>..\..\..\packages\Spark.1.5.1.6\lib\NET40\Spark.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -70,6 +83,13 @@
   <ItemGroup>
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlRpc\MetaWeblogApi.cs" />
+    <Compile Include="XmlRpc\Models\BlogInfo.cs" />
+    <Compile Include="XmlRpc\Models\CategoryInfo.cs" />
+    <Compile Include="XmlRpc\Models\MediaObject.cs" />
+    <Compile Include="XmlRpc\Models\MediaObjectInfo.cs" />
+    <Compile Include="XmlRpc\Models\PostInfo.cs" />
+    <Compile Include="XmlRpc\Models\UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -79,6 +99,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="views\home\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
