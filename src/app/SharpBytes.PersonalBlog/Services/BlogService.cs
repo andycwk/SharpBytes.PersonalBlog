@@ -1,6 +1,7 @@
 ﻿namespace SharpBytes.PersonalBlog.Services
 {
     using System.Collections.Generic;
+    using CookComputing.XmlRpc;
     using Interfaces;
     using Nancy;
     using Raven.Client;
@@ -8,9 +9,10 @@
 
     public class BlogService: IBlogService
     {
+        private readonly TinyIoCContainer container;
         private  IDocumentSession documentSession;
 
-        public BlogService(IDocumentSession documentSession)
+        public BlogService( IDocumentSession documentSession)
         {
             this.documentSession = documentSession;
         }
@@ -27,8 +29,6 @@
 
         public void BuildCategories()
         {
-            var container = TinyIoCContainer.Current;
-            documentSession = container.Resolve< IDocumentSession >();
             documentSession.Store(new Category{Title = "test"});
             documentSession.Store(new Category{Title = ".net"});
 

@@ -3,6 +3,8 @@ namespace SharpBytes.PersonalBlog.XmlRpc
     using System;
     using CookComputing.XmlRpc;
     using Services;
+    using Services.Interfaces;
+    using Services.RavenDB;
     using Technophobia.TechnicalBlogs.MetaWeblogApi;
     using TinyIoC;
     using System.Linq;
@@ -28,9 +30,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 
     CategoryInfo[] IMetaWeblog.GetCategories (string blogid, string username, string password)
     {
-        var blog  = TinyIoCContainer.Current.Resolve<BlogService>();
-
-        return ( from category in blog.GetCategories() select new CategoryInfo {title = category} ).ToArray();
+        return new CategoryInfo[0];
     }
 
     Post[] IMetaWeblog.GetRecentPosts (string blogid, string username, string password,
