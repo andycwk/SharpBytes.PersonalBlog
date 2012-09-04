@@ -8,6 +8,7 @@
 
 [Dd]ebug
 [Bb]uild/
+App_Data/
 *.user
 *.suo
 *.exe
