@@ -21,7 +21,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
                                {
                                    Body = post.description,
                                    DateAdded = DateTime.Now,
-                                   PulbishDate = post.dateCreated.ToUniversalTime()
+                                   PublishDate = post.dateCreated.ToUniversalTime()
                                };
 
             using( var documentSession = DocuemntStore.OpenSession() )
@@ -56,7 +56,17 @@ namespace SharpBytes.PersonalBlog.XmlRpc
         bool IMetaWeblog.UpdatePost( string postid, string username, string password,
                                      Post post, bool publish )
         {
-            throw new NotImplementedException();
+            ThrowExceptionIfAuthenticationFailsFor(username, password);
+
+            using (var documentSetssion = DocuemntStore.OpenSession())
+            {
+                var blogPost = documentSetssion.Load< BlogPost >( postid );
+
+                blogPost.UpdateDetailsFrom( post );
+                documentSetssion.SaveChanges();
+            }
+
+            return true;
         }
 
         Post IMetaWeblog.GetPost( string postid, string username, string password )
@@ -133,7 +143,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime DateAdded { get; set; }
-        public DateTime PulbishDate { get; set; }
+        public DateTime PublishDate { get; set; }
         public string Id { get; set; }
     }
 }
