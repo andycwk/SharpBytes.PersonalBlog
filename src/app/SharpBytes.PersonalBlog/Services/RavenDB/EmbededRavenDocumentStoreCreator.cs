@@ -1,5 +1,6 @@
 namespace SharpBytes.PersonalBlog.Services.RavenDB
 {
+    using System.Web;
     using Interfaces;
     using Raven.Client;
     using Raven.Client.Embedded;
@@ -7,14 +8,25 @@ namespace SharpBytes.PersonalBlog.Services.RavenDB
 
     class EmbededRavenDocumentStoreCreator    : IDocumentStoreCreator
     {
-        public IDocumentStore CreateDocumentStore()
+        private static EmbeddableDocumentStore documentStore;
+
+        public IDocumentStore CreateDocumentStore(RunEmbededServer runEmmededServer = RunEmbededServer.Yes)
         {
-            NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8080);
-            var documentStore = new EmbeddableDocumentStore()
-                                              {
-                                                  ConnectionStringName = "RavenDB",
-                                                  UseEmbeddedHttpServer = true
-                                              };
+            return documentStore?? BuildDocumentStore(runEmmededServer);
+        }
+
+        private static IDocumentStore BuildDocumentStore( RunEmbededServer runEmmededServer )
+        {
+            documentStore = new EmbeddableDocumentStore()
+                                {
+                                    ConnectionStringName = "RavenDB"
+                                };
+
+            if( runEmmededServer == RunEmbededServer.Yes )
+            {
+                NonAdminHttp.EnsureCanListenToWhenInNonAdminContext( 8080 );
+                documentStore.UseEmbeddedHttpServer = true;
+            }
 
             documentStore.Initialize();
             

@@ -5,6 +5,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
     using Services;
     using Services.Interfaces;
     using Services.RavenDB;
+    using Services.RavenDB.Interfaces;
     using Technophobia.TechnicalBlogs.MetaWeblogApi;
     using TinyIoC;
     using System.Linq;
@@ -14,10 +15,34 @@ namespace SharpBytes.PersonalBlog.XmlRpc
     string IMetaWeblog.AddPost (string blogid, string username, string password,
                                 Post post, bool publish)
     {
-        throw new NotImplementedException();
+        if (Authenticated(username, password) == false)
+            throw new XmlRpcException( "User credentials are not valid" );
+
+        var blogPost = new BlogPost
+                           {
+                               Title = post.title,
+                               Body = post.description,
+                               DateAdded = DateTime.Now,
+                               PulbishDate = post.dateCreated.ToUniversalTime()
+                           };
+
+        var docuemntStore = new EmbededRavenDocumentStoreCreator().CreateDocumentStore(RunEmbededServer.No);
+
+        using( var documentSession = docuemntStore.OpenSession() )
+        {
+            documentSession.Store(blogPost);
+            documentSession.SaveChanges();
+        }
+
+        return blogPost.Id;
     }
 
-    bool IMetaWeblog.UpdatePost (string postid, string username, string password,
+        private bool Authenticated( string username, string password )
+        {
+            return true;
+        }
+
+        bool IMetaWeblog.UpdatePost (string postid, string username, string password,
                                  Post post, bool publish)
     {
         throw new NotImplementedException();
@@ -25,7 +50,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 
     Post IMetaWeblog.GetPost (string postid, string username, string password)
     {
-        throw new NotImplementedException();
+        return new Post();
     }
 
     CategoryInfo[] IMetaWeblog.GetCategories (string blogid, string username, string password)
@@ -69,5 +94,14 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 throw new NotImplementedException();    }
 
   }
+
+    internal class BlogPost
+    {
+        public string Title { get; set; }
+        public string Body { get; set; }
+        public DateTime DateAdded { get; set; }
+        public DateTime PulbishDate { get; set; }
+        public string Id { get; set; }
+    }
 }
 
