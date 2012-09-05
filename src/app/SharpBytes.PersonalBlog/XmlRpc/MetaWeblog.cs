@@ -3,97 +3,123 @@ namespace SharpBytes.PersonalBlog.XmlRpc
     using System;
     using CookComputing.XmlRpc;
     using Extensions;
-    using Services;
-    using Services.Interfaces;
+    using Raven.Client;
+    using Raven.Client.Linq;
     using Services.RavenDB;
     using Services.RavenDB.Interfaces;
     using Technophobia.TechnicalBlogs.MetaWeblogApi;
-    using TinyIoC;
     using System.Linq;
 
-    public class MetaWeblog: XmlRpcService, IMetaWeblog
-  {
-    string IMetaWeblog.AddPost (string blogid, string username, string password,
-                                Post post, bool publish)
+    public class MetaWeblog : XmlRpcService, IMetaWeblog
     {
-        if (Authenticated(username, password) == false)
-            throw new XmlRpcException( "User credentials are not valid" );
-
-        var blogPost = new BlogPost(post.title)
-                           {
-                               Body = post.description,
-                               DateAdded = DateTime.Now,
-                               PulbishDate = post.dateCreated.ToUniversalTime()
-                           };
-
-        var docuemntStore = new EmbededRavenDocumentStoreCreator().CreateDocumentStore(RunEmbededServer.No);
-
-        using( var documentSession = docuemntStore.OpenSession() )
+        string IMetaWeblog.AddPost( string blogid, string username, string password,
+                                    Post post, bool publish )
         {
-            documentSession.Store(blogPost);
-            documentSession.SaveChanges();
+            ThrowExceptionIfAuthenticationFailsFor( username, password );
+
+            var blogPost = new BlogPost( post.title )
+                               {
+                                   Body = post.description,
+                                   DateAdded = DateTime.Now,
+                                   PulbishDate = post.dateCreated.ToUniversalTime()
+                               };
+
+            using( var documentSession = DocuemntStore.OpenSession() )
+            {
+                documentSession.Store( blogPost );
+                documentSession.SaveChanges();
+            }
+
+            return blogPost.Id;
         }
 
-        return blogPost.Id;
-    }
+        private void ThrowExceptionIfAuthenticationFailsFor( string username, string password )
+        {
+            if( Authenticated( username, password ) == false )
+                throw new XmlRpcException( "User credentials are not valid" );
+        }
+
+        private static IDocumentStore DocuemntStore
+        {
+            get
+            {
+                var docuemntStore = new EmbededRavenDocumentStoreCreator().CreateDocumentStore( RunEmbededServer.No );
+                return docuemntStore;
+            }
+        }
 
         private bool Authenticated( string username, string password )
         {
             return true;
         }
 
-        bool IMetaWeblog.UpdatePost (string postid, string username, string password,
-                                 Post post, bool publish)
-    {
-        throw new NotImplementedException();
+        bool IMetaWeblog.UpdatePost( string postid, string username, string password,
+                                     Post post, bool publish )
+        {
+            throw new NotImplementedException();
+        }
+
+        Post IMetaWeblog.GetPost( string postid, string username, string password )
+        {
+            ThrowExceptionIfAuthenticationFailsFor( username, password );
+
+            using( var documentSession = DocuemntStore.OpenSession() )
+            {
+                var post = documentSession.Load< BlogPost >( postid );
+                return post.AsStructure();
+            }
+        }
+
+        CategoryInfo[] IMetaWeblog.GetCategories( string blogid, string username, string password )
+        {
+            return new CategoryInfo[0];
+        }
+
+        Post[] IMetaWeblog.GetRecentPosts( string blogid, string username, string password,
+                                           int numberOfPosts )
+        {
+            ThrowExceptionIfAuthenticationFailsFor( username, password );
+
+            using( var documentSession = DocuemntStore.OpenSession() )
+            {
+                var posts = (from post in documentSession.Query< BlogPost >()
+                             orderby post.DateAdded
+                             select post).Take(numberOfPosts).ToList();
+
+
+                return (from post in posts select post.AsStructure()).ToArray();
+            }
+        }
+
+        MediaObjectInfo IMetaWeblog.NewMediaObject( string blogid, string username, string password,
+                                                    MediaObject mediaObject )
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IMetaWeblog.DeletePost( string key, string postid, string username, string password, bool publish )
+        {
+            throw new NotImplementedException();
+        }
+
+        BlogInfo[] IMetaWeblog.GetUsersBlogs( string key, string username, string password )
+        {
+            return new[]
+                       {
+                           new BlogInfo
+                               {
+                                   blogid = "1",
+                                   blogName = "Andrew Macdoanld",
+                                   url = "http://localhost:51313/"
+                               }
+                       };
+        }
+
+        UserInfo IMetaWeblog.GetUserInfo( string key, string username, string password )
+        {
+            throw new NotImplementedException();
+        }
     }
-
-    Post IMetaWeblog.GetPost (string postid, string username, string password)
-    {
-        return new Post();
-    }
-
-    CategoryInfo[] IMetaWeblog.GetCategories (string blogid, string username, string password)
-    {
-        return new CategoryInfo[0];
-    }
-
-    Post[] IMetaWeblog.GetRecentPosts (string blogid, string username, string password,
-                                       int numberOfPosts)
-    {
-        throw new NotImplementedException();
-    }
-
-    MediaObjectInfo IMetaWeblog.NewMediaObject (string blogid, string username, string password,
-                                                MediaObject mediaObject)
-    {
-      throw new NotImplementedException ();
-    }
-
-    bool IMetaWeblog.DeletePost (string key, string postid, string username, string password, bool publish)
-    {
-
-        throw new NotImplementedException();
-    }
-
-    BlogInfo[] IMetaWeblog.GetUsersBlogs (string key, string username, string password)
-    {
-        return new BlogInfo[]
-                   {
-                       new BlogInfo
-                           {
-                               blogid = "1",
-                               blogName = "Andrew Macdoanld",
-                               url = "http://localhost:51313/"
-                           }
-                   };
-    }
-
-    UserInfo IMetaWeblog.GetUserInfo (string key, string username, string password)
-    {
-throw new NotImplementedException();    }
-
-  }
 
     public class BlogPost
     {
@@ -111,4 +137,3 @@ throw new NotImplementedException();    }
         public string Id { get; set; }
     }
 }
-
