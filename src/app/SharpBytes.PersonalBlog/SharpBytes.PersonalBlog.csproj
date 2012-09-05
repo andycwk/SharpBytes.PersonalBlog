@@ -139,6 +139,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="NancyBootStrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

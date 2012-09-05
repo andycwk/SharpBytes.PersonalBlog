@@ -2,6 +2,7 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 {
     using System;
     using CookComputing.XmlRpc;
+    using Extensions;
     using Services;
     using Services.Interfaces;
     using Services.RavenDB;
@@ -18,9 +19,8 @@ namespace SharpBytes.PersonalBlog.XmlRpc
         if (Authenticated(username, password) == false)
             throw new XmlRpcException( "User credentials are not valid" );
 
-        var blogPost = new BlogPost
+        var blogPost = new BlogPost(post.title)
                            {
-                               Title = post.title,
                                Body = post.description,
                                DateAdded = DateTime.Now,
                                PulbishDate = post.dateCreated.ToUniversalTime()
@@ -95,8 +95,15 @@ throw new NotImplementedException();    }
 
   }
 
-    internal class BlogPost
+    public class BlogPost
     {
+        public BlogPost( string title )
+        {
+            Title = title;
+            Slug = title.Slug();
+        }
+
+        public string Slug { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime DateAdded { get; set; }
