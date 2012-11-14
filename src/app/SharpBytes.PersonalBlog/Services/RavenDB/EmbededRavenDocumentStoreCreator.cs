@@ -5,6 +5,7 @@ namespace SharpBytes.PersonalBlog.Services.RavenDB
     using Raven.Client;
     using Raven.Client.Embedded;
     using Raven.Database.Server;
+    using RavenDbIndexes;
 
     class EmbededRavenDocumentStoreCreator    : IDocumentStoreCreator
     {
@@ -12,24 +13,25 @@ namespace SharpBytes.PersonalBlog.Services.RavenDB
 
         public IDocumentStore CreateDocumentStore(RunEmbededServer runEmmededServer = RunEmbededServer.Yes)
         {
-            return documentStore?? BuildDocumentStore(runEmmededServer);
+            return documentStore?? BuildDocumentStorel(runEmmededServer);
         }
 
-        private static IDocumentStore BuildDocumentStore( RunEmbededServer runEmmededServer )
+        private static IDocumentStore BuildDocumentStorel( RunEmbededServer runEmmededServer )
         {
             documentStore = new EmbeddableDocumentStore()
                                 {
-                                    ConnectionStringName = "RavenDB"
+                                    ConnectionStringName = "RavenDB",
+                                    UseEmbeddedHttpServer = false  
                                 };
 
             if( runEmmededServer == RunEmbededServer.Yes )
             {
-                NonAdminHttp.EnsureCanListenToWhenInNonAdminContext( 8080 );
-                documentStore.UseEmbeddedHttpServer = true;
+               // NonAdminHttp.EnsureCanListenToWhenInNonAdminContext( 8080 );
+                //documentStore.UseEmbeddedHttpServer = true;
             }
 
             documentStore.Initialize();
-            
+            Raven.Client.Indexes.IndexCreation.CreateIndexes(typeof(BlogPost_Index).Assembly,documentStore);
             return documentStore;
         }
     }

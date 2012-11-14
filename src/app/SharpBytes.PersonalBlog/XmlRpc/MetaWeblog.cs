@@ -1,14 +1,16 @@
 namespace SharpBytes.PersonalBlog.XmlRpc
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using CookComputing.XmlRpc;
     using Extensions;
     using Raven.Client;
     using Raven.Client.Linq;
+    using RavenDbIndexes;
     using Services.RavenDB;
     using Services.RavenDB.Interfaces;
     using Technophobia.TechnicalBlogs.MetaWeblogApi;
-    using System.Linq;
 
     public class MetaWeblog : XmlRpcService, IMetaWeblog
     {
@@ -19,10 +21,8 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 
             var blogPost = new BlogPost( post.title )
                                {
-                                   Body = post.description,
                                    DateAdded = DateTime.Now,
-                                   PublishDate = post.dateCreated.ToUniversalTime()
-                               };
+                               }.UpdateDetailsFrom(post);
 
             using( var documentSession = DocuemntStore.OpenSession() )
             {
@@ -82,7 +82,16 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 
         CategoryInfo[] IMetaWeblog.GetCategories( string blogid, string username, string password )
         {
-            return new CategoryInfo[0];
+            using( var session = DocuemntStore.OpenSession() )
+            {
+                var query =
+                    from categoryInfo in session.Query< BlogPost_Categories.CategoryInfo, BlogPost_Categories >()
+                    select categoryInfo;
+
+                var d = query.ToList();
+
+                return (from categoryInfo in query select new CategoryInfo{title = categoryInfo.CategoryName}).ToArray();
+            }
         }
 
         Post[] IMetaWeblog.GetRecentPosts( string blogid, string username, string password,
@@ -109,7 +118,16 @@ namespace SharpBytes.PersonalBlog.XmlRpc
 
         bool IMetaWeblog.DeletePost( string key, string postid, string username, string password, bool publish )
         {
-            throw new NotImplementedException();
+            ThrowExceptionIfAuthenticationFailsFor(username, password);
+
+            using (var documentSession = DocuemntStore.OpenSession())
+            {
+                documentSession.Delete(documentSession.Load<BlogPost>(postid));
+
+                documentSession.SaveChanges();
+            }
+
+            return true;
         }
 
         BlogInfo[] IMetaWeblog.GetUsersBlogs( string key, string username, string password )
@@ -145,5 +163,6 @@ namespace SharpBytes.PersonalBlog.XmlRpc
         public DateTime DateAdded { get; set; }
         public DateTime PublishDate { get; set; }
         public string Id { get; set; }
+        public IList< string > Categories { get; set; }
     }
 }

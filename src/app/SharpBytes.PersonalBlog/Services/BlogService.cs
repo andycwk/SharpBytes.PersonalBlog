@@ -5,7 +5,10 @@
     using Interfaces;
     using Nancy;
     using Raven.Client;
+    using Raven.Client.Linq;
     using TinyIoC;
+    using XmlRpc;
+    using System.Linq;
 
     public class BlogService: IBlogService
     {
@@ -33,6 +36,11 @@
             documentSession.Store(new Category{Title = ".net"});
 
             documentSession.SaveChanges();
+        }
+
+        public IList< BlogPost > List()
+        {
+            return (from blogPost in documentSession.Query< BlogPost >() select blogPost).ToList();
         }
     }
 
