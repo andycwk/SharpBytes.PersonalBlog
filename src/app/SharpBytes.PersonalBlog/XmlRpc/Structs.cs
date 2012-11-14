@@ -3,7 +3,9 @@ using CookComputing.XmlRpc;
 
 namespace Technophobia.TechnicalBlogs.MetaWeblogApi
 {
-#region Structs
+    using SharpBytes.PersonalBlog.XmlRpc;
+
+    #region Structs
   public struct BlogInfo
   {
     public string blogName;

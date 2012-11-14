@@ -1,0 +1,8 @@
+﻿<viewdata model="IList[[BlogPost]]" />
+<h1>List</h1>
+
+<ul>
+	<li each="var blogPost in Model">
+		${blogPost.Title}
+	</li>
+</ul>

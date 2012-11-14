@@ -5,20 +5,25 @@
     using Services;
     using Services.Interfaces;
 
-    public class HomeModule: NancyModule
+    public class HomeModule : NancyModule
     {
-
-        public HomeModule(IBlogService blog, IDocumentSession docSession)
+        public HomeModule( IBlogService blog, IDocumentSession docSession )
         {
-            Get[ "/" ] = parameters => string.Format( "Hello Nancy World v2 {0}", string.Join(", ", blog.GetCategories()) );
+            Get[ "/" ] =
+                parameters => View["list", blog.List()];
 
-            Get["/gen"] = parameters => { 
+            Get[ "/list" ] = parameters => View[ "list", blog.List() ];
+
+            Get[ "/gen" ] = parameters =>
+                                {
 //                docSession.Store(new Category{Title= "cool"});
 //                docSession.SaveChanges();
-                blog.BuildCategories();
-                                            
-                return "Categories built";
-            };
+                                    blog.BuildCategories();
+
+                                    return "Categories built";
+                                };
+
+            Get["/wlwmanifest.xml"] = parameters => Response.AsFile("wlwmanifest.xml", "text/xml");
         }
     }
 }

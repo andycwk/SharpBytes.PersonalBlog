@@ -1,0 +1,63 @@
+﻿<global type="string" BODY_TITLE="null" PAGE_TITLE="''" />
+
+<DOCTYPE HTML>
+<html lang="en">
+   <head>
+   	<title>SharpBytes</title>
+		
+		<meta name="description" content="" /> 
+		<meta name="keywords" content="" /> 
+
+		<meta name="author" content="SharpBytes, http://www.sharpbytes.net" /> 
+		<meta name="copyright" content="SharpBytes" /> 
+		<meta name="robots" content="index,follow" /> 
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+      <link type="text/css" rel="stylesheet" media="screen" href="./content/screen.css" />
+   </head>
+   <body id=${BODY_TITLE}>
+      <div class="page wrapper">
+         <header>
+            <h1>SharpBytes</h1>
+            <div class="extras"></div>
+            <nav>
+               <ul>
+					   <li class="selected?{PAGE_TITLE=='Home'}"><a href="/">Home<span>&nbsp;</span></a></li>
+					   <li class="selected?{PAGE_TITLE=='What we do'}"><a href="what-we-do">What We Do<span>&nbsp;</span></a></li>
+					   <li class="selected?{PAGE_TITLE=='About us'}"><a href="about-us">About Us<span>&nbsp;</span></a></li>
+					   <li class="selected?{PAGE_TITLE=='Contact us'}"><a href="contact-us">Contact Us<span>&nbsp;</span></a></li>               
+               </ul>
+            </nav>
+         </header>
+      
+         <section class="content wrapper">
+            <header>
+               <use content="content-head" />
+            </header>
+            <div>
+					<aside if="PAGE_TITLE!='Home'">
+						<h2>Our services</h2>
+						<ul>
+							<li>Option 1</li>
+							<li>Option 2</li>
+							<li>Option 3</li>
+							<li>Option 4</li>
+							<li>Option 3</li>
+							<li>Option 4</li>
+						</ul>
+					</aside>
+               <use content="view" />
+            </div>
+         </section><!-- End Body Content -->
+
+         <footer>
+            <img src="/graphics/structure/mcad.png" alt="Microsoft Certified Application Developer"/>
+            <span>
+               <img src="/graphics/structure/email.png" alt="Send a message to"/>
+               <a href="mailto:contact-us@sharpbytes.net">contact-us@sharpbytes.net</a><br />
+               &copy; 2011 SharpBytes
+            </span>
+         </footer>
+      </div>
+   </body>
+</html>
